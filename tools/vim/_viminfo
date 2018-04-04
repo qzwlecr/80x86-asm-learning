@@ -8,8 +8,8 @@
 # hlsearch on (H) or off (h):
 ~h
 # Command Line History (newest to oldest):
-:q
 :wq
+:q
 :hi
 :hl
 :show hl
@@ -46,18 +46,20 @@
 	.
 
 # File marks:
-'0  1  0  C:\LAB1\QZW.ASM
-'1  1  0  C:\TOOLS\BATS\RM.BAT
-'2  2  5  C:\TOOLS\BATS\RM.BAT
-'3  23  0  C:\MASM611\BIN\CREF.DOC
-'4  1  0  C:\QZW.LIB
-'5  8  0  C:\LAB1-4.ASM
-'6  3  14  C:\LAB1-4.ASM
-'7  39  11  C:\LAB1-4.ASM
-'8  11  0  C:\LAB1-4.ASM
-'9  38  20  C:\LAB1-4.ASM
+'0  73  10  C:\LAB1\LAB1-4.ASM
+'1  1  0  C:\LAB1\QZW.ASM
+'2  1  0  C:\TOOLS\BATS\RM.BAT
+'3  2  5  C:\TOOLS\BATS\RM.BAT
+'4  23  0  C:\MASM611\BIN\CREF.DOC
+'5  1  0  C:\QZW.LIB
+'6  8  0  C:\LAB1-4.ASM
+'7  3  14  C:\LAB1-4.ASM
+'8  39  11  C:\LAB1-4.ASM
+'9  11  0  C:\LAB1-4.ASM
 
 # Jumplist (newest first):
+-'  73  10  C:\LAB1\LAB1-4.ASM
+-'  1  0  C:\LAB1\LAB1-4.ASM
 -'  1  0  C:\LAB1\QZW.ASM
 -'  1  0  C:\TOOLS\BATS\RM.BAT
 -'  2  5  C:\TOOLS\BATS\RM.BAT
@@ -155,9 +157,14 @@
 -'  14  8  C:\_VIMRC
 -'  15  10  C:\_VIMRC
 -'  1  0  C:\_VIMRC
--'  13  8  C:\_VIMRC
 
 # History of marks within files (newest to oldest):
+
+> C:\LAB1\LAB1-4.ASM
+	"	73	10
+	^	73	11
+	.	73	10
+	+	73	10
 
 > C:\LAB1\QZW.ASM
 	"	1	0
