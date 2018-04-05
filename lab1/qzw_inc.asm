@@ -1,5 +1,8 @@
-npvoid typedef near ptr
-fpvoid typedef far ptr
+extrn strcmp:far
+extrn strlen:far
+extrn strfcmp:far
+extrn itoa:far
+extrn divdw:far
 
 @getaddr macro reg:req, adr:req
 	if (opattr(adr)) and 00010000y
@@ -8,9 +11,9 @@ fpvoid typedef far ptr
 		mov reg, adr
 	elseif (type(adr) eq byte) or (type(adr) eq sbyte)
 		mov reg, offset adr
-	elseif (type(adr) eq npvoid) or (type(adr) eq word)
+	elseif (type(adr) eq far ptr) or (type(adr) eq word)
 		mov reg, adr
-	elseif (type(adr) eq fpvoid) or (type(adr) eq dword)
+	elseif (type(adr) eq far ptr) or (type(adr) eq dword)
 		mov reg, word ptr adr[0]
 		mov ds, word ptr adr[2]
 	else
@@ -19,8 +22,9 @@ fpvoid typedef far ptr
 endm
 
 ;Displays one or more characters to screen
-;Change ax,dl
 @putchar macro chr:vararg
+	push ax
+	push dx
 	mov ah, 02h
 	for arg, <chr>
 		ifdifi <arg>, <dl>
@@ -28,49 +32,72 @@ endm
 		endif
 		int 21h
 	endm
+	pop dx
+	pop ax
 endm
 
-;Gets a keystroke from the keyboard
-;Change ax,dl
+;Gets a keystroke from the keyboard into dl
+;Change dl
 @getchar macro
-    mov ah, 01h
-    int 21h
+	push ax
+	mov ah, 01h
+	int 21h
+	pop ax
 ENDM
 
 ;Displays a $-terminated string
-;Change ax,dx
 @puts macro ofset:req
-	local msg, sseg
-	@putchar 0ah
-	if @InStr(1,ofset, <!">) EQ 1
-		sseg textequ @CurSeg
-		.DATA
-		msg byte ofset, "$"
-	@CurSeg ends
-		sseg segment
-		mov dx, offset msg
-	else
-		@getaddr dx, ofset
-	endif
+	push ax
+	push dx
+	@putchar 10
+	@getaddr dx, ofset
 	mov ah, 9
 	int 21h
+	pop dx
+	pop ax
 endm
 
 ;Gets a string from the keyboard
-;Change ax,dx,bx,si
-@gets macro ofset:req, limit, termin
+;Change si, bx
+;length into bx and data into si
+@gets macro ofset:req, limit:req, termin:req
+	push ax
+	push dx
 	@getaddr dx, ofset
 	mov ah, 0ah
 	mov si, dx
-	ifnb <limit>
-		mov byte ptr[si], limit
-	endif
+	mov byte ptr[si], limit
 	int 21h
 	inc si
 	mov bl, [si]
 	sub bh, bh
 	inc si
-	ifnb <termin>
-		mov byte ptr[bx+si], termin
-	endif
+	mov byte ptr[bx+si], termin
+	pop dx
+	pop ax
+endm
+
+@strfcmp macro fir:req, sec:req
+	@getaddr ax, fir
+	push ax
+	@getaddr ax, sec
+	push ax
+	call far ptr strfcmp
+	add sp, 4
+endm
+
+@strcmp macro fir:req, sec: req
+	@getaddr ax, fir
+	push ax
+	@getaddr ax, sec
+	push ax
+	call far ptr strcmp
+	add sp, 4
+endm
+
+@strlen macro st:req
+	@getaddr ax, st
+	push ax
+	call far ptr strlen
+	add sp, 2
 endm

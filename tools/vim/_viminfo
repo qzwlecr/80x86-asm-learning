@@ -46,18 +46,19 @@
 	.
 
 # File marks:
-'0  73  10  C:\LAB1\LAB1-4.ASM
-'1  1  0  C:\LAB1\QZW.ASM
-'2  1  0  C:\TOOLS\BATS\RM.BAT
-'3  2  5  C:\TOOLS\BATS\RM.BAT
-'4  23  0  C:\MASM611\BIN\CREF.DOC
-'5  1  0  C:\QZW.LIB
-'6  8  0  C:\LAB1-4.ASM
-'7  3  14  C:\LAB1-4.ASM
-'8  39  11  C:\LAB1-4.ASM
-'9  11  0  C:\LAB1-4.ASM
+'0  1  42  C:\LAB1\MAKEFILE
+'1  73  10  C:\LAB1\LAB1-4.ASM
+'2  1  0  C:\LAB1\QZW.ASM
+'3  1  0  C:\TOOLS\BATS\RM.BAT
+'4  2  5  C:\TOOLS\BATS\RM.BAT
+'5  23  0  C:\MASM611\BIN\CREF.DOC
+'6  1  0  C:\QZW.LIB
+'7  8  0  C:\LAB1-4.ASM
+'8  3  14  C:\LAB1-4.ASM
+'9  39  11  C:\LAB1-4.ASM
 
 # Jumplist (newest first):
+-'  1  42  C:\LAB1\MAKEFILE
 -'  73  10  C:\LAB1\LAB1-4.ASM
 -'  1  0  C:\LAB1\LAB1-4.ASM
 -'  1  0  C:\LAB1\QZW.ASM
@@ -156,9 +157,14 @@
 -'  28  0  C:\_VIMRC
 -'  14  8  C:\_VIMRC
 -'  15  10  C:\_VIMRC
--'  1  0  C:\_VIMRC
 
 # History of marks within files (newest to oldest):
+
+> C:\LAB1\MAKEFILE
+	"	1	42
+	^	1	43
+	.	1	42
+	+	1	42
 
 > C:\LAB1\LAB1-4.ASM
 	"	73	10

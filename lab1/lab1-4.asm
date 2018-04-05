@@ -8,10 +8,10 @@ stack ends
 
 Goods struct
 	goods_name db 10 dup(0)
-	goods_in dw 0
-	goods_out dw 0
-	goods_innum dw 0
 	goods_outnum dw 0
+	goods_innum dw 0
+	goods_out dw 0
+	goods_in dw 0
 	goods_pro dw 0
 Goods ends
 
@@ -42,13 +42,11 @@ data segment use16
 	found_ptr1 dw 0
 	found_ptr2 dw 0
 	average dw 0 
+	out_num db 10 dup(0)
 data ends
 
-extern strcmp:near
-extern strlen:near
-extern strfcmp:near
 
-code segment para public use16
+code segment use16
 	assume cs:code, ds:data, ss:stack
 start:
 	mov ax, data
@@ -58,18 +56,15 @@ re_auth:
 	@gets in_name_head, 10, 0
 	cmp bx, 0
 	jz guest_mode
-	push offset in_name
-	push offset quit_name
-	call near ptr strfcmp
-	sub sp, -4
+	@strfcmp in_name, quit_name
 	cmp ax, 0
 	jz quit
 	@puts noti_userpwd
 	@gets in_pwd_head, 6, 0
-	push offset in_name
-	push offset user_name
-	call near ptr strfcmp
-	sub sp, -4
+	@strfcmp in_name, user_name
+	cmp ax, 0
+	jnz auth_failed
+	@strfcmp in_pwd, user_pwd
 	cmp ax, 0
 	jnz auth_failed
 	mov byte ptr[auth], 1
@@ -87,23 +82,19 @@ admin_mode:
 calc_mode:
 	@puts noti_goods
 	@gets in_goods_head, 10, 0
-	cmp ax, 0
+	cmp bx, 0
 	jz re_auth
 shop1_search:
 	mov bx, N
 	mov si, offset shop1_goods
-	push offset in_goods
 shop1_search_loop:
-	push si
-	call near ptr strfcmp
-	sub sp,-2
+	@strfcmp in_goods, si
 	cmp ax, 0
 	jz shop1_found
 	add si, sizeof Goods
 	dec bx
 	jnz shop1_search_loop
 shop1_notfound:
-	sub sp, -2
 	cmp bx, 0
 	jz calc_mode
 shop1_found:
@@ -113,18 +104,14 @@ shop1_found:
 shop2_search:
 	mov bx, N
 	mov si, offset shop2_goods
-	push offset in_goods
 shop2_search_loop:
-	push si
-	call near ptr strfcmp
-	sub sp,-2
+	@strfcmp in_goods, si
 	cmp ax, 0
 	jz shop2_found
 	add si, sizeof Goods
 	dec bx
 	jnz shop2_search_loop
 shop2_notfound:
-	sub sp, -2
 	cmp bx, 0
 	jz calc_mode
 shop2_found:
@@ -136,56 +123,59 @@ admin_calc:
 assume si:ptr Goods
 ;calc ptr1
 	mov si, word ptr[found_ptr1]
-	mov ax, [si].goods_in
-	mov cx, [si].goods_innum
-	imul cx
-	mov dx, ax
 	mov ax, [si].goods_out
 	mov cx, [si].goods_outnum
-	imul cx
-	mov di, ax
+	imul ax, cx
+	mov dx, ax
+	mov ax, [si].goods_in
+	mov cx, [si].goods_innum
+	imul ax, cx
 	sub dx, ax
-	mov ax, dx
 	mov cx, 100
-	imul cx
-	mov cx, di
+	imul dx, cx
+	mov cx, ax
 	mov ax, dx
-	push dx
 	mov dx, 0
 	idiv cx
-	pop dx
 	mov word ptr[found_ptr1], ax
 ;calc ptr2
 	mov si, word ptr[found_ptr2]
-	mov ax, [si].goods_in
-	mov cx, [si].goods_innum
-	imul cx
-	mov dx, ax
 	mov ax, [si].goods_out
 	mov cx, [si].goods_outnum
-	imul cx
-	mov di, ax
+	imul ax, cx
+	mov dx, ax
+	mov ax, [si].goods_in
+	mov cx, [si].goods_innum
+	imul ax, cx
 	sub dx, ax
-	mov ax, dx
 	mov cx, 100
-	imul cx
-	mov cx, di
+	imul dx, cx
+	mov cx, ax
 	mov ax, dx
-	push dx
 	mov dx, 0
 	idiv cx
-	pop dx
+	mov word ptr[found_ptr2], ax
 assume si:nothing
 ;calc aver
-	mov word ptr[found_ptr2],ax
 	mov cx, word ptr[found_ptr1]
 	add ax, cx
 	mov cx, 2
-	push dx
 	mov dx, 0
 	idiv cx
-	pop dx
 	mov word ptr[average], ax
+	mov si, offset out_num
+	push dx
+	push ax
+	call far ptr itoa
+	add sp, 4
+	push ax
+	@strlen out_num
+	mov si, offset out_num
+	add si, ax
+	mov byte ptr[si] ,'$'
+	@puts out_num
+	pop ax
+	@putchar 10
 	cmp ax, 90
 	jge class_a
 	cmp ax, 50
@@ -209,9 +199,7 @@ class_d:
 	@putchar 10,'D',10
 	jmp re_auth
 guest_calc:
-	push offset in_goods
-	call near ptr strlen
-	sub sp, -2
+	@strlen in_goods
 	mov si, offset in_goods
 	add si, ax
 	mov byte ptr[si] ,'$'

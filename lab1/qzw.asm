@@ -3,14 +3,17 @@
 public strcmp
 public strlen
 public strfcmp
+public itoa
+public divdw
+retsize equ 4
 
-code segment para public use16
+cod segment use16
 
-strlen proc near
+strlen proc far
 	push bp
 	mov bp, sp
 	push bx
-	mov bx, word ptr[bp + 4]
+	mov bx, word ptr[bp + retsize + 2]
 	push si
 	mov si, 0
 	push dx
@@ -29,13 +32,13 @@ strlen_exit:
 	ret
 strlen endp
 
-strcmp proc near
+strcmp proc far
 	push bp
 	mov bp, sp
 	push bx
 	push si
-	mov bx, word ptr[bp + 4]
-	mov si, word ptr[bp + 6]
+	mov bx, word ptr[bp + retsize + 2]
+	mov si, word ptr[bp + retsize + 4]
 	push cx
 strcmp_loop:
 	mov cl, byte ptr[bx]
@@ -65,7 +68,7 @@ strcmp_exit:
 	ret
 strcmp endp
 
-strfcmp proc near
+strfcmp proc far
 	push bp
 	mov bp,sp
 	push bx
@@ -73,21 +76,21 @@ strfcmp proc near
 	push cx
 	push dx
 	mov ax, 0
-	mov bx, word ptr[bp + 4]
-	mov si, word ptr[bp + 6]
+	mov bx, word ptr[bp + retsize + 2]
+	mov si, word ptr[bp + retsize + 4]
 	push si
 	push bx
 	call strcmp
-	sub sp, -4
+	add sp, 4
 	cmp ax, 0
 	jnz strfcmp_fail
 	push bx
 	call strlen
-	sub sp, -2
+	add sp, 2
 	mov cx, ax
 	push si
 	call strlen
-	sub sp, -2
+	add sp, 2
 	mov dx, ax
 	sub cx, dx
 	mov ax, cx
@@ -103,5 +106,57 @@ strfcmp_fail:
 	ret
 strfcmp endp
 
-code ends
+itoa proc far
+	push bp
+	push ax
+	push dx
+	push si
+	push cx
+	mov bp, sp
+	mov ax, word ptr[bp + retsize + 0ah]
+	mov dx, word ptr[bp + retsize + 0ch]
+	mov cx, 0
+	push cx
+itoa_divs:
+	mov cx, 10
+	call far ptr divdw
+	add cx, 30h
+	push cx
+	or ax, dx
+	mov cx, ax
+	jcxz itoa_copy
+	jmp itoa_divs
+itoa_copy:
+	pop cx
+	mov [si], cl
+	jcxz itoa_return
+	inc si
+	jmp itoa_copy
+itoa_return:
+	pop cx
+	pop si
+	pop dx
+	pop ax
+	pop bp
+	ret
+itoa endp
+
+divdw proc far
+	jcxz divdw_return
+	push bx
+	push ax
+	mov ax, dx
+	mov dx, 0
+	div cx
+	mov bx, ax
+	pop ax
+	div cx
+	mov cx, dx
+	mov dx, bx
+	pop bx
+divdw_return:
+	ret
+divdw endp
+
+cod ends
 end
