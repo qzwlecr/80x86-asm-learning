@@ -51,20 +51,20 @@ code segment use16
 start:
 	mov ax, data
 	mov ds, ax
-re_auth:
+re_auth: 
 	@puts noti_username
-	@gets in_name_head, 10, 0
+	@gets in_name_head, 10, 0 ;Use bx, si as input
 	cmp bx, 0
 	jz guest_mode
-	@strfcmp in_name, quit_name
+	@strfcmp in_name, quit_name ;Use ax as strfcmp result
 	cmp ax, 0
 	jz quit
 	@puts noti_userpwd
-	@gets in_pwd_head, 6, 0
-	@strfcmp in_name, user_name
+	@gets in_pwd_head, 6, 0 ;Use bx, si as input
+	@strfcmp in_name, user_name ;Use ax as strfcmp result
 	cmp ax, 0
 	jnz auth_failed
-	@strfcmp in_pwd, user_pwd
+	@strfcmp in_pwd, user_pwd ;Use ax as strfcmp result
 	cmp ax, 0
 	jnz auth_failed
 	mov byte ptr[auth], 1
@@ -75,68 +75,66 @@ auth_failed:
 	jmp re_auth
 guest_mode:
 	@puts noti_guest_mode
+	mov byte ptr[auth], 0
 	jmp calc_mode
 admin_mode:
 	@puts noti_admin_mode
 	jmp calc_mode
 calc_mode:
 	@puts noti_goods
-	@gets in_goods_head, 10, 0
+	@gets in_goods_head, 10, 0 ;Use bx, si as input
 	cmp bx, 0
 	jz re_auth
 shop1_search:
-	mov bx, N
-	mov si, offset shop1_goods
+	mov bx, N ;Use bx as iterator
+	mov si, offset shop1_goods ;Use si as shop1 offset
 shop1_search_loop:
-	@strfcmp in_goods, si
+	@strfcmp in_goods, si ;Use ax as strfcmp result
 	cmp ax, 0
 	jz shop1_found
 	add si, sizeof Goods
 	dec bx
 	jnz shop1_search_loop
-shop1_notfound:
+shop1_not_found:
 	cmp bx, 0
 	jz calc_mode
 shop1_found:
-	mov word ptr[found_ptr1], si
-	cmp byte ptr[auth], 0
+	mov word ptr[found_ptr1], si ;Save result
+	cmp byte ptr[auth], 0 ;Check auth status
 	jz guest_calc
 shop2_search:
-	mov bx, N
-	mov si, offset shop2_goods
+	mov bx, N ;Use bx as iterator
+	mov si, offset shop2_goods ;Use si as shop2 offset
 shop2_search_loop:
-	@strfcmp in_goods, si
+	@strfcmp in_goods, si 
 	cmp ax, 0
 	jz shop2_found
 	add si, sizeof Goods
 	dec bx
 	jnz shop2_search_loop
-shop2_notfound:
+shop2_not_found:
 	cmp bx, 0
 	jz calc_mode
 shop2_found:
 	mov word ptr[found_ptr2], si
-;assume si:ptr Goods
-;	mov (Goods ptr [si]).goods_name, '$'
-;assume si:nothing
 admin_calc:
 assume si:ptr Goods
 ;calc ptr1
-	mov si, word ptr[found_ptr1]
+	mov si, word ptr[found_ptr1] ;Use si as good1 offset
 	mov ax, [si].goods_out
 	mov cx, [si].goods_outnum
-	imul ax, cx
+	imul ax, cx ;Calc goods out
 	mov dx, ax
 	mov ax, [si].goods_in
 	mov cx, [si].goods_innum
-	imul ax, cx
+	imul ax, cx ;Calc goods in
 	sub dx, ax
 	mov cx, 100
-	imul dx, cx
+	imul dx, cx ;Multiple 100
 	mov cx, ax
 	mov ax, dx
 	mov dx, 0
-	idiv cx
+	idiv cx ;Calc result
 	mov word ptr[found_ptr1], ax
 ;calc ptr2
 	mov si, word ptr[found_ptr2]
@@ -163,19 +161,10 @@ assume si:nothing
 	mov dx, 0
 	idiv cx
 	mov word ptr[average], ax
-	mov si, offset out_num
-	push dx
-	push ax
-	call far ptr itoa
-	add sp, 4
-	push ax
-	@strlen out_num
-	mov si, offset out_num
-	add si, ax
-	mov byte ptr[si] ,'$'
+	@itoa out_num, dx, ax
+	@strpush out_num, '%'
+	@strpush out_num, '$'
 	@puts out_num
-	pop ax
-	@putchar 10
 	cmp ax, 90
 	jge class_a
 	cmp ax, 50
@@ -184,25 +173,22 @@ assume si:nothing
 	jge class_c
 	cmp ax, 0
 	jge class_d
-	@putchar 10,'F',10
+	@putchar 10,'F'
 	jmp re_auth
 class_a:
-	@putchar 10,'A',10
+	@putchar 10,'A'
 	jmp re_auth
 class_b:
-	@putchar 10,'B',10
+	@putchar 10,'B'
 	jmp re_auth
 class_c:
-	@putchar 10,'C',10
+	@putchar 10,'C'
 	jmp re_auth
 class_d:
-	@putchar 10,'D',10
+	@putchar 10,'D'
 	jmp re_auth
 guest_calc:
-	@strlen in_goods
-	mov si, offset in_goods
-	add si, ax
-	mov byte ptr[si] ,'$'
+	@strpush in_goods, '$'
 	@puts in_goods
 quit:
 	@puts noti_bye

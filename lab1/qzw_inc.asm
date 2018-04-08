@@ -2,7 +2,6 @@ extrn strcmp:far
 extrn strlen:far
 extrn strfcmp:far
 extrn itoa:far
-extrn divdw:far
 
 @getaddr macro reg:req, adr:req
 	if (opattr(adr)) and 00010000y
@@ -100,4 +99,26 @@ endm
 	push ax
 	call far ptr strlen
 	add sp, 2
+endm
+
+@itoa macro addr: req, fir:req, sec: req
+	push si
+	@getaddr si, addr
+	push si
+	push fir
+	push sec
+	call far ptr itoa
+	add sp, 6
+	pop si
+endm
+
+@strpush macro addr: req, chr: req
+	push si
+	push ax
+	@getaddr si, addr
+	@strlen addr
+	add si, ax
+	mov byte ptr[si] , chr
+	pop ax
+	pop si
 endm

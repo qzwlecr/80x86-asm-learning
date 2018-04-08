@@ -5,7 +5,7 @@ public strlen
 public strfcmp
 public itoa
 public divdw
-retsize equ 4
+retsize equ 4 ;Because of far jump
 
 cod segment use16
 
@@ -115,6 +115,7 @@ itoa proc far
 	mov bp, sp
 	mov ax, word ptr[bp + retsize + 0ah]
 	mov dx, word ptr[bp + retsize + 0ch]
+	mov si, word ptr[bp + retsize + 0eh]
 	mov cx, 0
 	push cx
 itoa_divs:
