@@ -46,18 +46,20 @@
 	.
 
 # File marks:
-'0  1  42  C:\LAB1\MAKEFILE
-'1  73  10  C:\LAB1\LAB1-4.ASM
-'2  1  0  C:\LAB1\QZW.ASM
-'3  1  0  C:\TOOLS\BATS\RM.BAT
-'4  2  5  C:\TOOLS\BATS\RM.BAT
-'5  23  0  C:\MASM611\BIN\CREF.DOC
-'6  1  0  C:\QZW.LIB
-'7  8  0  C:\LAB1-4.ASM
-'8  3  14  C:\LAB1-4.ASM
-'9  39  11  C:\LAB1-4.ASM
+'0  216  4  C:\LAB2\LAB2.ASM
+'1  1  42  C:\LAB1\MAKEFILE
+'2  73  10  C:\LAB1\LAB1-4.ASM
+'3  1  0  C:\LAB1\QZW.ASM
+'4  1  0  C:\TOOLS\BATS\RM.BAT
+'5  2  5  C:\TOOLS\BATS\RM.BAT
+'6  23  0  C:\MASM611\BIN\CREF.DOC
+'7  1  0  C:\QZW.LIB
+'8  8  0  C:\LAB1-4.ASM
+'9  3  14  C:\LAB1-4.ASM
 
 # Jumplist (newest first):
+-'  216  4  C:\LAB2\LAB2.ASM
+-'  1  0  C:\LAB2\LAB2.ASM
 -'  1  42  C:\LAB1\MAKEFILE
 -'  73  10  C:\LAB1\LAB1-4.ASM
 -'  1  0  C:\LAB1\LAB1-4.ASM
@@ -155,10 +157,14 @@
 -'  13  8  C:\_VIMRC
 -'  29  0  C:\_VIMRC
 -'  28  0  C:\_VIMRC
--'  14  8  C:\_VIMRC
--'  15  10  C:\_VIMRC
 
 # History of marks within files (newest to oldest):
+
+> C:\LAB2\LAB2.ASM
+	"	216	4
+	^	216	5
+	.	216	5
+	+	216	5
 
 > C:\LAB1\MAKEFILE
 	"	1	42
